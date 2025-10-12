@@ -15,7 +15,7 @@ local DEFAULTS = {
 	Offset = Vector3.new(0,0,0),
 	IgnoreList = {},
 	AutoParent = workspace,
-	TouchMode = "single",    -- "single" | "cooldown" | "always"
+	TouchMode = "single",
 	TouchCooldown = 1.0,
 }
 
@@ -58,21 +58,16 @@ function AxeMHitbox.new(params)
 	self.AnchorPart = params.AnchorPart
 	assert(self.AnchorPart and self.AnchorPart:IsA("BasePart"), "AxeMHitbox: óêàæèòå êîððåêòíûé AnchorPart")
 
-	-- Êîëáýê òåïåðü ïðèíèìàåò model (Instance - Model), hitbox, part
-	-- signature: function(model, hitbox, part) -> optional { Consume = false }
 	self.OnModelTouched = params.OnModelTouched
 
 	self.TouchMode = params.TouchMode or DEFAULTS.TouchMode
 	self.TouchCooldown = (params.TouchCooldown ~= nil) and params.TouchCooldown or DEFAULTS.TouchCooldown
 
-	-- âíóòðåííèå
-	-- _touchedPlayers: [modelInstance] = true OR timestamp (for cooldown)
 	self._touchedPlayers = {}
 	self._enabled = false
 	self._touchConn = nil
 	self._hbConn = nil
 
-	-- âèçóàë
 	local visual = Instance.new("Part")
 	visual.Name = "AxeMHitbox_Visual"
 	visual.Size = self.Size
@@ -99,7 +94,6 @@ function AxeMHitbox:_updateVisual()
 	if self._visual.Parent ~= self.AutoParent then self._visual.Parent = self.AutoParent end
 end
 
--- canTouch: ïðîâåðÿåì ðåæèì è ñòàòóñ ïî êëþ÷ó model (Instance)
 function AxeMHitbox:_canTouchModel(model)
 	if not model then return false end
 	local mode = self.TouchMode
@@ -126,39 +120,28 @@ function AxeMHitbox:_markTouchedModel(model)
 	end
 end
 
--- Îñíîâíîé îáðàáîò÷èê êàíäèäàòà: òåïåðü ðàáîòàåò ñ model (ëþáàÿ Model)
 function AxeMHitbox:_handleCandidatePart(part)
 	if not part or not part.Parent then return end
 
-	-- èãíîð-ëèñò (òî÷íûå ñîâïàäåíèÿ ñ part èëè model)
 	for _, v in ipairs(self.IgnoreList) do
 		if v == part or v == part.Parent then
 			return
 		end
 	end
 
-	local model = part.Parent -- Model èëè Model-like
+	local model = part.Parent
 
-	-- îïöèîíàëüíî: åñëè õîòèì ïðîïóñêàòü íå-ìîäåëè, ìîæíî ïðîâåðèòü IsA("Model") — íî íå îáÿçàòåëüíî
-	-- local modelIsModel = model:IsA("Model")
-	-- if not modelIsModel then return end
-
-	-- åñëè åñòü Humanoid è îí ì¸ðòâ — èãíîðèðóåì
 	local humanoid = model:FindFirstChildOfClass("Humanoid")
 	if humanoid and humanoid.Health <= 0 then return end
 
-	-- ïðîâåðÿåì âîçìîæíîñòü ñðàáîòàòü ïî ìîäåëè (single/cooldown/always)
 	if not self:_canTouchModel(model) then return end
 
-	-- ïîìå÷àåì çàðàíåå
 	self:_markTouchedModel(model)
 
-	-- âûçûâàåì êîëáýê (åñëè çàäàí)
 	if self.OnModelTouched then
 		local ok, result = pcall(function()
 			return self.OnModelTouched(model, self, part)
 		end)
-		-- åñëè êîëáýê âåðíóë { Consume = false }, ñíèìàåì ïîìåòêó
 		if ok then
 			if type(result) == "table" and result.Consume == false then
 				self._touchedPlayers[model] = nil
@@ -232,7 +215,6 @@ function AxeMHitbox:Destroy()
 	setmetatable(self, nil)
 end
 
--- Ñáðàñûâàåì êàñàíèÿ: ïî ìîäåëè (Instance) èëè âñå
 function AxeMHitbox:ResetTouches(model)
 	if model then
 		self._touchedPlayers[model] = nil
@@ -262,3 +244,4 @@ function AxeMHitbox:SetOnModelTouched(fn) self.OnModelTouched = fn end
 
 
 return AxeMHitbox
+

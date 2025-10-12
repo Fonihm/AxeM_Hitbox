@@ -227,7 +227,6 @@ function AxeMHitbox:HasModelTouched(model)
 	return self._touchedPlayers[model] ~= nil
 end
 
--- runtime setters
 function AxeMHitbox:SetSize(vec3) self.Size = vec3 if self._visual then self._visual.Size = vec3 end end
 function AxeMHitbox:SetColor(color3) self.Color = color3 if self._visual then self._visual.Color = color3 end end
 function AxeMHitbox:SetVisible(visible, optionalTransparency)
@@ -244,4 +243,5 @@ function AxeMHitbox:SetOnModelTouched(fn) self.OnModelTouched = fn end
 
 
 return AxeMHitbox
+
 

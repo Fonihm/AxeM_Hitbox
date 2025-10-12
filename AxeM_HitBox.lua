@@ -1,50 +1,3 @@
--- ModuleScript: AxeMHitbox (Server)
--- Автор: AxeM_FoNi
--- Описание:
---	                           /\_/\  
---                            ( •.• )  AxeM
---  ---------------------------------------------------------------¬
---  ¦                      AxeM_Hitbox v1.1                        ¦
---  ¦                      Модуль хитбоксов                        ¦
---  ¦                                                              ¦
---  ¦  Параметры при создании:                                     ¦
---  ¦   - AnchorPart        : BasePart (обязательно)               ¦
---  ¦   - Size              : Vector3, размер хитбокса             ¦
---  ¦   - Offset            : Vector3, смещение                    ¦
---  ¦   - Color             : Color3, цвет визуала                 ¦
---  ¦   - Visible           : boolean, показывать визуал           ¦
---  ¦   - TouchMode         : "single" | "cooldown" | "always"     ¦
---  ¦   - TouchCooldown     : задержка между касаниями (сек)       ¦
---  ¦   - OnModelTouched    : функция при касании модели           ¦
---  ¦   - IgnoreList        : объекты для игнорирования            ¦
---  ¦   - Debug             : true/false, для тестирования         ¦
---  ¦                                                              ¦
---  ¦  Runtime-сеттеры                                             ¦
---  ¦   SetSize(), SetColor(), SetVisible(),                       ¦
---  ¦   SetOffset(), AddIgnore(), RemoveIgnore(),                  ¦
---  ¦   ResetTouches(), SetTouchMode(),                            ¦
---  ¦   SetTouchCooldown(), SetOnModelTouched()                    ¦
---  ¦                                                              ¦
---  L---------------------------------------------------------------
---[[
-
-пример:   
-
-	local hitbox = AxeM_Hitbox.new({                             
-		AnchorPart = script.Parent,                             
-		Size = Vector3.new(4,4,4),                              
-		Visible = true,                                         
-		TouchMode = "cooldown",                                 
-		TouchCooldown = 1,                                      
-		OnModelTouched = function(model, hb, part)              
-			print(model.Name .. " потрогал хитбокс!")           
-		end                                                     
-	})                                                          
-    hitbox:Enable() 
-
---]]
-
-
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
@@ -103,23 +56,23 @@ function AxeMHitbox.new(params)
 	self.AutoParent = params.AutoParent or DEFAULTS.AutoParent
 
 	self.AnchorPart = params.AnchorPart
-	assert(self.AnchorPart and self.AnchorPart:IsA("BasePart"), "AxeMHitbox: укажите корректный AnchorPart")
+	assert(self.AnchorPart and self.AnchorPart:IsA("BasePart"), "AxeMHitbox: ГіГЄГ Г¦ГЁГІГҐ ГЄГ®Г°Г°ГҐГЄГІГ­Г»Г© AnchorPart")
 
-	-- Колбэк теперь принимает model (Instance - Model), hitbox, part
+	-- ГЉГ®Г«ГЎГЅГЄ ГІГҐГЇГҐГ°Гј ГЇГ°ГЁГ­ГЁГ¬Г ГҐГІ model (Instance - Model), hitbox, part
 	-- signature: function(model, hitbox, part) -> optional { Consume = false }
 	self.OnModelTouched = params.OnModelTouched
 
 	self.TouchMode = params.TouchMode or DEFAULTS.TouchMode
 	self.TouchCooldown = (params.TouchCooldown ~= nil) and params.TouchCooldown or DEFAULTS.TouchCooldown
 
-	-- внутренние
+	-- ГўГ­ГіГІГ°ГҐГ­Г­ГЁГҐ
 	-- _touchedPlayers: [modelInstance] = true OR timestamp (for cooldown)
 	self._touchedPlayers = {}
 	self._enabled = false
 	self._touchConn = nil
 	self._hbConn = nil
 
-	-- визуал
+	-- ГўГЁГ§ГіГ Г«
 	local visual = Instance.new("Part")
 	visual.Name = "AxeMHitbox_Visual"
 	visual.Size = self.Size
@@ -146,7 +99,7 @@ function AxeMHitbox:_updateVisual()
 	if self._visual.Parent ~= self.AutoParent then self._visual.Parent = self.AutoParent end
 end
 
--- canTouch: проверяем режим и статус по ключу model (Instance)
+-- canTouch: ГЇГ°Г®ГўГҐГ°ГїГҐГ¬ Г°ГҐГ¦ГЁГ¬ ГЁ Г±ГІГ ГІГіГ± ГЇГ® ГЄГ«ГѕГ·Гі model (Instance)
 function AxeMHitbox:_canTouchModel(model)
 	if not model then return false end
 	local mode = self.TouchMode
@@ -173,45 +126,45 @@ function AxeMHitbox:_markTouchedModel(model)
 	end
 end
 
--- Основной обработчик кандидата: теперь работает с model (любая Model)
+-- ГЋГ±Г­Г®ГўГ­Г®Г© Г®ГЎГ°Г ГЎГ®ГІГ·ГЁГЄ ГЄГ Г­Г¤ГЁГ¤Г ГІГ : ГІГҐГЇГҐГ°Гј Г°Г ГЎГ®ГІГ ГҐГІ Г± model (Г«ГѕГЎГ Гї Model)
 function AxeMHitbox:_handleCandidatePart(part)
 	if not part or not part.Parent then return end
 
-	-- игнор-лист (точные совпадения с part или model)
+	-- ГЁГЈГ­Г®Г°-Г«ГЁГ±ГІ (ГІГ®Г·Г­Г»ГҐ Г±Г®ГўГЇГ Г¤ГҐГ­ГЁГї Г± part ГЁГ«ГЁ model)
 	for _, v in ipairs(self.IgnoreList) do
 		if v == part or v == part.Parent then
 			return
 		end
 	end
 
-	local model = part.Parent -- Model или Model-like
+	local model = part.Parent -- Model ГЁГ«ГЁ Model-like
 
-	-- опционально: если хотим пропускать не-модели, можно проверить IsA("Model") — но не обязательно
+	-- Г®ГЇГ¶ГЁГ®Г­Г Г«ГјГ­Г®: ГҐГ±Г«ГЁ ГµГ®ГІГЁГ¬ ГЇГ°Г®ГЇГіГ±ГЄГ ГІГј Г­ГҐ-Г¬Г®Г¤ГҐГ«ГЁ, Г¬Г®Г¦Г­Г® ГЇГ°Г®ГўГҐГ°ГЁГІГј IsA("Model") вЂ” Г­Г® Г­ГҐ Г®ГЎГїГ§Г ГІГҐГ«ГјГ­Г®
 	-- local modelIsModel = model:IsA("Model")
 	-- if not modelIsModel then return end
 
-	-- если есть Humanoid и он мёртв — игнорируем
+	-- ГҐГ±Г«ГЁ ГҐГ±ГІГј Humanoid ГЁ Г®Г­ Г¬ВёГ°ГІГў вЂ” ГЁГЈГ­Г®Г°ГЁГ°ГіГҐГ¬
 	local humanoid = model:FindFirstChildOfClass("Humanoid")
 	if humanoid and humanoid.Health <= 0 then return end
 
-	-- проверяем возможность сработать по модели (single/cooldown/always)
+	-- ГЇГ°Г®ГўГҐГ°ГїГҐГ¬ ГўГ®Г§Г¬Г®Г¦Г­Г®Г±ГІГј Г±Г°Г ГЎГ®ГІГ ГІГј ГЇГ® Г¬Г®Г¤ГҐГ«ГЁ (single/cooldown/always)
 	if not self:_canTouchModel(model) then return end
 
-	-- помечаем заранее
+	-- ГЇГ®Г¬ГҐГ·Г ГҐГ¬ Г§Г Г°Г Г­ГҐГҐ
 	self:_markTouchedModel(model)
 
-	-- вызываем колбэк (если задан)
+	-- ГўГ»Г§Г»ГўГ ГҐГ¬ ГЄГ®Г«ГЎГЅГЄ (ГҐГ±Г«ГЁ Г§Г Г¤Г Г­)
 	if self.OnModelTouched then
 		local ok, result = pcall(function()
 			return self.OnModelTouched(model, self, part)
 		end)
-		-- если колбэк вернул { Consume = false }, снимаем пометку
+		-- ГҐГ±Г«ГЁ ГЄГ®Г«ГЎГЅГЄ ГўГҐГ°Г­ГіГ« { Consume = false }, Г±Г­ГЁГ¬Г ГҐГ¬ ГЇГ®Г¬ГҐГІГЄГі
 		if ok then
 			if type(result) == "table" and result.Consume == false then
 				self._touchedPlayers[model] = nil
 			end
 		else
-			warn("AxeMHitbox: ошибка в OnModelTouched:", result)
+			warn("AxeMHitbox: Г®ГёГЁГЎГЄГ  Гў OnModelTouched:", result)
 		end
 	end
 end
@@ -279,7 +232,7 @@ function AxeMHitbox:Destroy()
 	setmetatable(self, nil)
 end
 
--- Сбрасываем касания: по модели (Instance) или все
+-- Г‘ГЎГ°Г Г±Г»ГўГ ГҐГ¬ ГЄГ Г±Г Г­ГЁГї: ГЇГ® Г¬Г®Г¤ГҐГ«ГЁ (Instance) ГЁГ«ГЁ ГўГ±ГҐ
 function AxeMHitbox:ResetTouches(model)
 	if model then
 		self._touchedPlayers[model] = nil
@@ -306,5 +259,6 @@ function AxeMHitbox:RemoveIgnore(instance) return tableRemoveValue(self.IgnoreLi
 function AxeMHitbox:SetTouchMode(mode) assert(mode=="single"or mode=="cooldown"or mode=="always","Invalid TouchMode") self.TouchMode=mode end
 function AxeMHitbox:SetTouchCooldown(seconds) self.TouchCooldown=seconds end
 function AxeMHitbox:SetOnModelTouched(fn) self.OnModelTouched = fn end
+
 
 return AxeMHitbox

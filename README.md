@@ -1,136 +1,100 @@
-🪓 AxeM_Hitbox v1.1
+AxeM_Hitbox 🪓
 
-A flexible and easy‑to‑use Hitbox Module for Roblox — perfect for combat systems, interactive objects, or any scenario where you need to detect when models intersect a zone!
+[![GitHub](https://img.shields.io/badge/author-Fonihm-blue)](https://github.com/Fonihm)
 
----
-
-✨ What It Does
-
-AxeM_Hitbox allows you to create and control hitboxes in Roblox with:
-
-- Multiple touch modes (single, cooldown, always)
-- Optional visual hitbox with color & transparency
-- Simple runtime API for dynamic control
-- Ignore lists to skip specific parts/models
-- Safe detection using GetPartBoundsInBox
-- Automatic filtering of dead humanoids
+A powerful and flexible **hitbox module** for Roblox, designed for server-side use. Easily create customizable hitboxes for models with support for multiple touch modes, visual debugging, and cooldowns.
 
 ---
 
-🔧 Constructor Parameters
+Features ✨
 
-Parameter                | Type      | Description
------------------------- | -------- | ---------------------------------------
-AnchorPart               | BasePart | Required. The part the hitbox attaches to
-Size                     | Vector3  | Hitbox dimensions
-Offset                   | Vector3  | Offset relative to the AnchorPart
-Color                    | Color3   | Visual color of the hitbox
-Visible                  | boolean  | Show the visual hitbox
-VisibleTransparency      | number   | Transparency of the visual
-Anchored                 | boolean  | Should the visual be anchored?
-CanCollide               | boolean  | Should the visual collide?
-TouchMode                | string   | "single", "cooldown", or "always"
-TouchCooldown            | number   | Delay between detections (seconds)
-OnModelTouched           | function | Callback when a model touches
-IgnoreList               | {Instance} | Things to ignore during checks
-PollRate                 | number   | How often collisions are checked
-AutoParent               | Instance | Where the visual is parented
-Debug                    | boolean  | Enables debug/testing behaviors
+* Create hitboxes attached to any `BasePart`
+* Configurable **size**, **color**, **offset**, and **visibility**
+* Multiple **touch modes**: `single`, `cooldown`, or `always`
+* **Cooldown support** between touches
+* Ignore specific parts or models via **IgnoreList**
+* Visual debug mode for easy testing
+* Runtime setters for dynamic updates
 
 ---
 
-🧠 Touch Modes Explained
+Installation 🛠️
 
-- single  — triggers only one time per model until reset.
-- cooldown — triggers again after the cooldown period has passed.
-- always — triggers every time an overlap is detected.
+1. Clone or download this repository
+2. Place `AxeMHitbox` in your `ServerScriptService` or appropriate folder
+3. Require the module in your script:
 
-If your callback returns:
-return { Consume = false }
-
-the hitbox will not mark the model as "touched" (useful for persistent effects).
-
----
-
-🛠️ Methods
-
-Method                                      | What It Does
-------------------------------------------- | ------------------------
-SetSize(Vector3)                            | Update hitbox size
-SetColor(Color3)                            | Change visual color
-SetVisible(boolean, optionalTransparency)   | Show/hide visual
-SetOffset(Vector3)                          | Change hitbox offset
-AddIgnore(Instance)                         | Add to ignore list
-RemoveIgnore(Instance)                      | Remove from ignore list
-SetTouchMode(string)                        | Update touch mode
-SetTouchCooldown(number)                    | Update cooldown
-SetOnModelTouched(function)                 | Change touch callback
-ResetTouches(optionalModel)                 | Reset touch history
-HasModelTouched(model)                      | Check if a model touched
-Enable()                                    | Turn hitbox on
-Disable()                                   | Turn hitbox off
-Destroy()                                   | Destroy the hitbox
+```lua
+local AxeM_Hitbox = require(path.to.AxeMHitbox)
+```
 
 ---
 
-📜 Example Usage
+Usage 📦
 
-local AxeM_Hitbox = require(game.ReplicatedStorage.AxeM_Hitbox)
-
--- Create a hitbox
+```lua
 local hitbox = AxeM_Hitbox.new({
     AnchorPart = script.Parent,
     Size = Vector3.new(4, 4, 4),
-    Offset = Vector3.new(0, 0, 0),
     Visible = true,
-    VisibleTransparency = 0.6,
-    Color = Color3.fromRGB(255, 0, 0),
     TouchMode = "cooldown",
     TouchCooldown = 1,
-    IgnoreList = {},
     OnModelTouched = function(model, hb, part)
         print(model.Name .. " touched the hitbox!")
-        -- Here you can deal damage, trigger effects, etc.
     end
 })
 
--- Enable the hitbox
 hitbox:Enable()
+```
 
--- Change hitbox properties at runtime
-hitbox:SetColor(Color3.fromRGB(0, 255, 0))  -- make it green
-hitbox:SetSize(Vector3.new(6, 6, 6))        -- make it bigger
+Runtime Setters
 
----
-
-📋 Collision Detection Details
-
-AxeM_Hitbox uses Workspace:GetPartBoundsInBox() with OverlapParams to reliably check overlaps every frame based on PollRate.
-
-Filtering Rules:
-
-- Parts in IgnoreList are not counted.
-- Players or models with a Humanoid whose Health <= 0 are automatically ignored.
-- The hitbox itself (visual part) is ignored.
-- You can pass both parts and entire models into IgnoreList.
+```lua
+hitbox:SetSize(Vector3.new(6, 6, 6))
+hitbox:SetColor(Color3.fromRGB(255, 0, 0))
+hitbox:SetVisible(true)
+hitbox:SetOffset(Vector3.new(0, 2, 0))
+hitbox:AddIgnore(game.Workspace.IgnoreMe)
+hitbox:RemoveIgnore(game.Workspace.IgnoreMe)
+hitbox:SetTouchMode("always")
+hitbox:SetTouchCooldown(2)
+hitbox:SetOnModelTouched(function(model) print(model.Name) end)
+```
 
 ---
 
-💡 Useful Tips
+API Reference 📖
 
-- Make sure AnchorPart is valid.
-- Check Size and Offset values.
-- Try increasing PollRate if detection fails.
-- Add objects that shouldn’t trigger to the IgnoreList.
-- Use ResetTouches() to allow repeated hit registrations.
-- Adjust VisibleTransparency to make the hitbox easier to debug without blocking view.
+* **Enable()** — Activates the hitbox
+* **Disable()** — Deactivates the hitbox
+* **Destroy()** — Cleans up and removes the hitbox
+* **ResetTouches(model?)** — Resets touch state (specific model or all)
+* **HasModelTouched(model)** — Checks if the model has already touched the hitbox
 
 ---
 
-📜 License
+Parameters ⚙️
 
-MIT License
+| Parameter        | Type                | Description                              |
+| ---------------- | ------------------- | ---------------------------------------- |
+| `AnchorPart`     | BasePart (required) | The part to attach the hitbox to         |
+| `Size`           | Vector3             | Hitbox dimensions                        |
+| `Offset`         | Vector3             | Position offset from anchor              |
+| `Color`          | Color3              | Visual color                             |
+| `Visible`        | boolean             | Show the hitbox visual                   |
+| `TouchMode`      | string              | "single", "cooldown", or "always"        |
+| `TouchCooldown`  | number              | Seconds between touches in cooldown mode |
+| `OnModelTouched` | function            | Callback when a model touches the hitbox |
+| `IgnoreList`     | table               | Parts/models to ignore                   |
+| `Debug`          | boolean             | Enable visual debug                      |
 
-Copyrigh / AxeM_FoNi
+---
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software...
+License 📝
+
+This project is open-source under the **MIT License**. Feel free to use, modify, and contribute!
+
+---
+
+**Author:** [Fonihm](https://github.com/Fonihm)
+**Module Version:** 1.1

@@ -50,15 +50,11 @@ hitbox:Enable()
 Runtime Setters
 
 ```lua
-hitbox:SetSize(Vector3.new(6, 6, 6))
-hitbox:SetColor(Color3.fromRGB(255, 0, 0))
-hitbox:SetVisible(true)
-hitbox:SetOffset(Vector3.new(0, 2, 0))
-hitbox:AddIgnore(game.Workspace.IgnoreMe)
-hitbox:RemoveIgnore(game.Workspace.IgnoreMe)
-hitbox:SetTouchMode("always")
-hitbox:SetTouchCooldown(2)
-hitbox:SetOnModelTouched(function(model) print(model.Name) end)
+Runtime-сеттеры                                            
+SetSize(), SetColor(), SetVisible(),                       
+SetOffset(), AddIgnore(), RemoveIgnore(),                  
+ResetTouches(), SetTouchMode(),                            
+SetTouchCooldown(), SetOnModelTouched()
 ```
 
 ---

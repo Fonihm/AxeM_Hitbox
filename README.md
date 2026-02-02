@@ -1,4 +1,4 @@
-AxeM_Hitbox 🪓
+AxeM_Hitbox (👉ﾟヮﾟ)👉 🟥
 
 [![GitHub](https://img.shields.io/badge/author-Fonihm-blue)](https://github.com/Fonihm)
 

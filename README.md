@@ -6,7 +6,7 @@ A powerful and flexible **hitbox module** for Roblox, designed for server-side u
 
 ---
 
-Features ✨
+Features (❁´◡`❁)
 
 * Create hitboxes attached to any `BasePart`
 * Configurable **size**, **color**, **offset**, and **visibility**
@@ -18,7 +18,7 @@ Features ✨
 
 ---
 
-Installation 🛠️
+Installation \(￣︶￣*\))
 
 1. Clone or download this repository
 2. Place `AxeMHitbox` in your `ServerScriptService` or appropriate folder
@@ -30,7 +30,7 @@ local AxeM_Hitbox = require(game.ServerScriptService.AxeMHitbox)
 
 ---
 
-Usage 📦
+Usage (●'◡'●)
 
 ```lua
 local hitbox = AxeM_Hitbox.new({
@@ -47,7 +47,7 @@ local hitbox = AxeM_Hitbox.new({
 hitbox:Enable()
 ```
 
-Runtime Setters
+Runtime Setters （￣︶￣）↗　
 
 ```lua
 Runtime-сеттеры                                            
@@ -59,7 +59,7 @@ SetTouchCooldown(), SetOnModelTouched()
 
 ---
 
-API Reference 📖
+API Reference (。﹏。)
 
 * **Enable()** — Activates the hitbox
 * **Disable()** — Deactivates the hitbox
@@ -69,7 +69,7 @@ API Reference 📖
 
 ---
 
-Parameters ⚙️
+Parameters o(^▽^)o
 
 | Parameter        | Type                | Description                              |
 | ---------------- | ------------------- | ---------------------------------------- |
@@ -86,7 +86,7 @@ Parameters ⚙️
 
 ---
 
-License 📝
+License ( •̀ ω •́ )✧
 
 This project is open-source under the **MIT License**. Feel free to use, modify, and contribute!
 

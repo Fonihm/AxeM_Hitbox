@@ -25,7 +25,7 @@ Installation 🛠️
 3. Require the module in your script:
 
 ```lua
-local AxeM_Hitbox = require(path.to.AxeMHitbox)
+local AxeM_Hitbox = require(game.ServerScriptService.AxeMHitbox)
 ```
 
 ---

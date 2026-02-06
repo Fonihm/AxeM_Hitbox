@@ -245,3 +245,4 @@ function AxeMHitbox:SetOnModelTouched(fn) self.OnModelTouched = fn end
 return AxeMHitbox
 
 
+
